@@ -8,6 +8,7 @@ const openWeatherKey = 'e5e4463dfec74dc682c9a292e9fa45a7';
 const weatherUrl = 'https://api.weatherbit.io/v2.0/current?city=';
 
 // Page Elements
+//NEW JQUERY APPROACH
 const $input = $('#city');
 const $submit = $('#button');
 const $destination = $('#destination');
@@ -54,6 +55,7 @@ const getForecast = async () => {
 
 
 // Render functions
+//NEW .append() METHOD takes html and incapsulates it in chosen by ID HTML item
 const renderVenues = (venues) => {
   const renderVenues = (venues) => {
     $venueDivs.forEach(($venue, index) => {
@@ -62,10 +64,9 @@ const renderVenues = (venues) => {
       const location = venue.location;
       const icon = venue.categories[0].icon;
       const iconSrc = icon.prefix + 'bg_64' + icon.suffix;
-      console.log(name);
-      console.log(location);
-      console.log(iconSrc);
-      let venueContent = `<h2>${name}</h2><img class="venueimage" src="${iconSrc}"/><h3>Address:</h3><p>${location.address}</p><p>${location.city}</p><p>${location.country}</p>`;
+      let venueContent = `<h2>${name}</h2><img class="venueimage" src="${iconSrc}"/>
+      <h3>Address:</h3><p>${location.address}</p>
+      <p>${location.city}</p><p>${location.country}</p>`;
       $venue.append(venueContent);
     });
     $destination.append(`<h2>${venues[0].location.city}</h2>`);
@@ -74,8 +75,13 @@ const renderVenues = (venues) => {
 
 const renderForecast = (day) => {
   // Add your code here:
-  
-	let weatherContent = '';
+  const weekday = weekDays[(new Date()).getDay()];
+  const forecast = day.data[0];
+  const temperature = forecast.temp;
+  const conditions = forecast.weather.description;
+  const iconSRC = '';
+	let weatherContent = `<img src="${iconSRC}"><h2>${weekday}</h2><h2>Temperature: ${temperature}</h2>
+<h2>Condition: ${conditions}`;
   $weatherDiv.append(weatherContent);
 }
 
@@ -85,7 +91,7 @@ const executeSearch = () => {
   $destination.empty();
   $container.css("visibility", "visible");
   getVenues().then(venues => renderVenues(venues));
-  getForecast()
+  getForecast().then(forecast => renderForecast(forecast));
   return false;
 }
 
