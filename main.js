@@ -7,13 +7,17 @@ const url = 'https://api.foursquare.com/v2/venues/explore?near=';
 const openWeatherKey = 'e5e4463dfec74dc682c9a292e9fa45a7';
 const weatherUrl = 'https://api.weatherbit.io/v2.0/current?city=';
 
+const venueInfoRequest = 'https://api.foursquare.com/v2/venues/'
+
+
 // Page Elements
 //NEW JQUERY APPROACH
+// TODO: Generate venues divs based on API response
 const $input = $('#city');
 const $submit = $('#button');
 const $destination = $('#destination');
 const $container = $('.container');
-const $venueDivs = [$("#venue1"), $("#venue2"), $("#venue3"), $("#venue4")];
+const $venueDivs = [$("#venue1"), $("#venue2"), $("#venue3"), $("#venue4"), $("#venue5"), $("#venue6") ];
 const $weatherDiv = $("#weather1");
 const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -55,15 +59,23 @@ const getForecast = async () => {
 
 
 // Render functions
-//NEW .append() METHOD takes html and incapsulates it in chosen by ID HTML item
+// NEW: .append() METHOD takes html and incapsulates it in chosen by ID HTML item
+// TODO: Show photos of venues
 const renderVenues = (venues) => {
   const renderVenues = (venues) => {
     $venueDivs.forEach(($venue, index) => {
       const venue = venues[index];
+      const id = venue.id;
       const name = venue.name;
       const location = venue.location;
       const icon = venue.categories[0].icon;
       const iconSrc = icon.prefix + 'bg_64' + icon.suffix;
+      const getPhoto = async () => {
+        let result = await fetch(venueInfoRequest + id);
+      }
+
+      getPhoto.then(photo)
+
       let venueContent = `<h2>${name}</h2><img class="venueimage" src="${iconSrc}"/>
       <h3>Address:</h3><p>${location.address}</p>
       <p>${location.city}</p><p>${location.country}</p>`;
