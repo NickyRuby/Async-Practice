@@ -7,8 +7,6 @@ const url = 'https://api.foursquare.com/v2/venues/explore?near=';
 const openWeatherKey = 'e5e4463dfec74dc682c9a292e9fa45a7';
 const weatherUrl = 'https://api.weatherbit.io/v2.0/current?city=';
 
-const venueInfoRequest = 'https://api.foursquare.com/v2/venues/'
-
 
 // Page Elements
 //NEW JQUERY APPROACH
@@ -57,24 +55,35 @@ const getForecast = async () => {
   }
 }
 
+const getPhotosFor = async (id) => {
+  const venuePhotoRequest = `https://api.foursquare.com/v2/venues/${id}`
+  try {
+    let result = await fetch(venuePhotoRequest);
+    if (result.ok) {
+      const resp = await result.json();
+      return resp;
+    }
+  }
+  catch(err) {
+    console.log(err)
+  }
+}
+
 
 // Render functions
 // NEW: .append() METHOD takes html and incapsulates it in chosen by ID HTML item
 // TODO: Show photos of venues
-const renderVenues = (venues) => {
   const renderVenues = (venues) => {
     $venueDivs.forEach(($venue, index) => {
       const venue = venues[index];
-      const id = venue.id;
       const name = venue.name;
       const location = venue.location;
       const icon = venue.categories[0].icon;
       const iconSrc = icon.prefix + 'bg_64' + icon.suffix;
-      const getPhoto = async () => {
-        let result = await fetch(venueInfoRequest + id);
-      }
 
-      getPhoto.then(photo)
+      const photos = getPhotosFor(venue.id);
+      console.log(photos);
+
 
       let venueContent = `<h2>${name}</h2><img class="venueimage" src="${iconSrc}"/>
       <h3>Address:</h3><p>${location.address}</p>
@@ -83,10 +92,8 @@ const renderVenues = (venues) => {
     });
     $destination.append(`<h2>${venues[0].location.city}</h2>`);
   }
-}
 
 const renderForecast = (day) => {
-  // Add your code here:
   const weekday = weekDays[(new Date()).getDay()];
   const forecast = day.data[0];
   const temperature = forecast.temp;
