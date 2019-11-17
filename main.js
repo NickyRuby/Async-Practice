@@ -22,7 +22,7 @@ const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 // Add AJAX functions here:
 const getVenues = async () => {
    const city = $input.val();
-   const urlToFetch = `${url}${city}&limit=10&client_id=${clientId}&client_secret=${clientSecret}&v=${20191107}`;
+   const urlToFetch = `${url}${city}&limit=10&client_id=${clientId}&client_secret=${clientSecret}&v=${20191117}`;
   try {
     const response = await fetch(urlToFetch);
     if (response.ok) {
@@ -55,13 +55,15 @@ const getForecast = async () => {
   }
 }
 
+
+
 const getPhotosFor = async (id) => {
-  const venuePhotoRequest = `https://api.foursquare.com/v2/venues/${id}`
+  const venuePhotoRequest = `https://api.foursquare.com/v2/venues/${id}?client_id=${clientId}&client_secret=${clientSecret}&v=${20191117}`
   try {
-    let result = await fetch(venuePhotoRequest);
+    const result = await fetch(venuePhotoRequest);
     if (result.ok) {
       const resp = await result.json();
-      return resp;
+      return resp.response.venue.bestPhoto;
     }
   }
   catch(err) {
@@ -81,13 +83,16 @@ const getPhotosFor = async (id) => {
       const icon = venue.categories[0].icon;
       const iconSrc = icon.prefix + 'bg_64' + icon.suffix;
 
-      const photos = getPhotosFor(venue.id);
-      console.log(photos);
+      const photo = getPhotosFor(venue.id).then((response) => {
+          return response;
+      });
+      const photoSRC = photo.prefix + "500x500" + photo.suffix;
+      console.log(photoSRC);
 
 
       let venueContent = `<h2>${name}</h2><img class="venueimage" src="${iconSrc}"/>
       <h3>Address:</h3><p>${location.address}</p>
-      <p>${location.city}</p><p>${location.country}</p>`;
+      <p>${location.city}</p><p>${location.country}</p><img src=${photoSRC}>`;
       $venue.append(venueContent);
     });
     $destination.append(`<h2>${venues[0].location.city}</h2>`);
